@@ -1,0 +1,2 @@
+"# Blog_Server"  initgit add README.mdgit commit -m "first commit"git branch -M maingit remote add origin https://github.com/AbduSubhan11/Blog_Server.gitgit push -u origin main
+"# Blog_Server"  initgit add README.mdgit commit -m "first commit"git branch -M maingit remote add origin https://github.com/AbduSubhan11/Blog_Server.gitgit push -u origin main
