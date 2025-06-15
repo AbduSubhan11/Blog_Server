@@ -23,6 +23,11 @@ app.use(cookieParser());
 app.use("/api/v2", blogrouter);
 app.use("/api/v1", authRouter);
 
+app.get("/", (req, res) => {
+  res.send("Backend is working ✅");
+});
+
+
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
