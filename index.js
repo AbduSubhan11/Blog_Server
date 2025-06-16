@@ -1,6 +1,6 @@
 import express from "express";
-import { blogrouter } from "./routes/blog.route.js";
-import { authRouter } from "./routes/auth.route.js";
+import { blogrouter } from "./api/blog.route.js";
+import { authRouter } from "./api/auth.route.js";
 import connectDB from "./connectdb/connect.js";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -17,6 +17,7 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
+    
   })
 );
 app.use(cookieParser()); 
