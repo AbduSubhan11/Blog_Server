@@ -147,7 +147,6 @@ export const updateProfile = async (req, res) => {
   try {
     const updateData = { name, email };
     if (req.file) {
-      console.log("Processing file upload:", req.file);
       const file = await uploadImageToCloudinary(req.file.path);
       if (!file) {
         return res.status(500).json({ message: "Image upload failed" });
