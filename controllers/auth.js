@@ -130,45 +130,48 @@ export const getCurrentUser = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   const { name, email } = req.body;
-  const {id} = req.params;
-  if (!id) {
-    return res.status(401).json({ message: "Unauthorized" });
+  const { userId } = req.params;
+
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ message: "Authentication failed. No user data provided." });
+  }
+
+  if (!userId || userId !== req.user.id.toString()) {
+    return res.status(403).json({ message: "Unauthorized to update this profile" });
   }
 
   if (!name || !email) {
     return res.status(400).json({ message: "Name and email are required" });
   }
 
-  if (!req.file) {
-    return res.status(400).json({ message: "Profile image is required" });
-  }
-
   try {
-    const file = await uploadImageToCloudinary(req.file.path);
-    if (!file) {
-      return res.status(500).json({ message: "Image upload failed" });
+    const updateData = { name, email };
+    if (req.file) {
+      console.log("Processing file upload:", req.file);
+      const file = await uploadImageToCloudinary(req.file.path);
+      if (!file) {
+        return res.status(500).json({ message: "Image upload failed" });
+      }
+      updateData.profilePicture = file;
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        name,
-        email,
-        profilePicture: file,
-      },
+      req.user.id,
+      updateData,
       { runValidators: true, new: true }
-    ).select("-password"); 
+    ).select("-password");
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
     return res.status(200).json({
       message: "Profile updated successfully",
-      user: updatedUser, 
+      user: updatedUser,
+      token: req.newAccessToken,
     });
-
   } catch (error) {
+    console.log("Error in updateProfile:", error);
     return res.status(500).json({ message: error.message });
   }
 };
-
