@@ -48,7 +48,7 @@ export const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // ✅ only true in production
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // ✅ avoids issues locally
+      sameSite: process.env.NODE_ENV === "production" ? "Lax" : "Lax", // ✅ avoids issues locally
       path: "/", // required for all routes
     });
 
