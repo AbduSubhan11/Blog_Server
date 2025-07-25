@@ -14,7 +14,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://future-tech-ai.netlify.app"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://future-tech-ai.netlify.app",
+    ],
     credentials: true,
   })
 );

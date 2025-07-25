@@ -35,8 +35,9 @@ export const login = async (req, res) => {
     const token = generateAuthToken(user);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production" ? true : false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
@@ -86,9 +87,9 @@ export const register = async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production", // true in prod only
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
   });
 
   res.status(201).json({
@@ -133,11 +134,15 @@ export const updateProfile = async (req, res) => {
   const { userId } = req.params;
 
   if (!req.user || !req.user.id) {
-    return res.status(401).json({ message: "Authentication failed. No user data provided." });
+    return res
+      .status(401)
+      .json({ message: "Authentication failed. No user data provided." });
   }
 
   if (!userId || userId !== req.user.id.toString()) {
-    return res.status(403).json({ message: "Unauthorized to update this profile" });
+    return res
+      .status(403)
+      .json({ message: "Unauthorized to update this profile" });
   }
 
   if (!name || !email) {
@@ -154,11 +159,10 @@ export const updateProfile = async (req, res) => {
       updateData.profilePicture = file;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      updateData,
-      { runValidators: true, new: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+      runValidators: true,
+      new: true,
+    }).select("-password");
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });

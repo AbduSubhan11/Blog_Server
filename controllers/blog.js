@@ -2,8 +2,6 @@ import Blog from "../models/blog.model.js";
 import User from "../models/user.model.js";
 import { uploadImageToCloudinary } from "../utils/cloudinary.js";
 
-
-
 export const postBlog = async (req, res) => {
   const { title, description, category } = req.body;
 
@@ -63,7 +61,9 @@ export const getAllBlogs = async (req, res) => {
     const blogs = await Blog.find({ userId });
 
     if (!blogs || blogs.length === 0) {
-      return res.status(404).json({ message: "No blogs found please post your blog" });
+      return res
+        .status(404)
+        .json({ message: "No blogs found please post your blog" });
     }
 
     res.status(200).json(blogs);
@@ -88,7 +88,6 @@ export const deleteBlog = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export const updateBlog = async (req, res) => {
   const { title, description, category } = req.body;
@@ -115,7 +114,7 @@ export const updateBlog = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
-    let imageUrl = blog.image; 
+    let imageUrl = blog.image;
 
     if (req.file) {
       const cloudinaryImage = await uploadImageToCloudinary(req.file.path);
@@ -207,5 +206,3 @@ export const likeOrUnlikeBlog = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
