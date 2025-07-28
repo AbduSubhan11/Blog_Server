@@ -35,10 +35,10 @@ export const login = async (req, res) => {
     const token = generateAuthToken(user);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // must be true for cross-site
-      sameSite: "None", // required for cross-domain
-      path: "/", // accessible everywhere
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      secure: true, 
+      sameSite: "None", 
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000, 
     });
 
     res.status(200).json({
