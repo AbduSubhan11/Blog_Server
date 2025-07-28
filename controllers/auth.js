@@ -178,3 +178,24 @@ export const updateProfile = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.find(userId);
+
+    if (!user) {
+      return res.status(404).json({message: "No users found"});
+    }
+
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const allusers = await User.find();
+
+    res.status(200).json(allusers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

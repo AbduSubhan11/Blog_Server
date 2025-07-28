@@ -5,6 +5,7 @@ import {
   logout,
   getCurrentUser,
   updateProfile,
+  getAllUsers,
 } from "../controllers/auth.js";
 import { authenticateUser } from "../middleware/user.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
@@ -21,3 +22,4 @@ authRouter.put(
 );
 authRouter.post("/logout", logout);
 authRouter.get("/user", authenticateUser, getCurrentUser);
+authRouter.get("/getAllUsers:userId", authenticateUser, getAllUsers);
