@@ -180,9 +180,9 @@ export const updateProfile = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.params.id;
   try {
-    const user = await User.find(userId);
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({message: "No users found"});

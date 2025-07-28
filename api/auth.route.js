@@ -22,4 +22,4 @@ authRouter.put(
 );
 authRouter.post("/logout", logout);
 authRouter.get("/user", authenticateUser, getCurrentUser);
-authRouter.get("/getAllUsers:userId", authenticateUser, getAllUsers);
+authRouter.get("/getAllUsers/:id", authenticateUser, getAllUsers);
