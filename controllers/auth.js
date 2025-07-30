@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateAuthToken } from "../utils/jwt.js";
 import { uploadImageToCloudinary } from "../utils/cloudinary.js";
+// export
 
 export const login = async (req, res) => {
   if (!req.body) {
