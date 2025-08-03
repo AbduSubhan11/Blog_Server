@@ -35,10 +35,10 @@ export const login = async (req, res) => {
     const token = generateAuthToken(user);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, 
-      sameSite: "None", 
+      secure: true,
+      sameSite: "None",
       path: "/",
-      maxAge: 24 * 60 * 60 * 1000, 
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
@@ -55,49 +55,56 @@ export const register = async (req, res) => {
   if (!req.body) {
     return res.status(400).json({ message: "Request body is required" });
   }
+
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
+  let file = null;
 
-  const file = await uploadImageToCloudinary(req.file.path);
+  try {
+    if (req.file && req.file.path) {
+      file = await uploadImageToCloudinary(req.file.path);
+    }
 
-  if (!file) {
-    return res.status(500).json({ message: "Image upload failed" });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const createdUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      profilePicture: file, 
+    });
+
+    if (!createdUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    res.status(201).json({
+      user: {
+        id: createdUser._id,
+        name: createdUser.name,
+        email: createdUser.email,
+      },
+      message: "Registration successful",
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
+};
 
-  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const createdUser = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    profilePicture: file,
-  });
-
-  if (!createdUser) {
-    return res.status(400).json({ message: "User already exists" });
+export const registerController = async (req, res) => {
+  try {
+    console.log("Register Body:", req.body);
+    return res.status(200).json({ message: "Test OK" });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ error: "Something went wrong" });
   }
-
-  const token = generateAuthToken(createdUser);
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true in prod only
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
-
-  res.status(201).json({
-    user: {
-      id: createdUser._id,
-      name: createdUser.name,
-      email: createdUser.email,
-    },
-    message: "Registration successful",
-  });
 };
 
 export const logout = async (req, res) => {
