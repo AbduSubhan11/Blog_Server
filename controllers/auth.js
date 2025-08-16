@@ -75,7 +75,7 @@ export const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      profilePicture: file, 
+      profilePicture: file,
     });
 
     if (!createdUser) {
@@ -90,20 +90,8 @@ export const register = async (req, res) => {
       },
       message: "Registration successful",
     });
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  }
-};
-
-
-export const registerController = async (req, res) => {
-  try {
-    console.log("Register Body:", req.body);
-    return res.status(200).json({ message: "Test OK" });
-  } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({ error: "Something went wrong" });
   }
 };
 
@@ -113,6 +101,7 @@ export const logout = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      path: "/",
     });
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
