@@ -7,7 +7,7 @@ export const authenticateUser = (req, res, next) => {
       req.headers["authorization"]?.split(" ")[1] || 
       req.headers["token"]?.split(" ")[0]; 
     if (!refreshJwtToken) {
-      return res
+      return res  
         .status(401)
         .json({ message: "Please log in to access this page. No token provided." });
     }
